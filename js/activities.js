@@ -30,7 +30,6 @@ function parseTweets(runkeeper_tweets) {
 			currentCount += 1
 			activityFreq.set(currentType, currentCount);
 		}
-		// console.log("activity type: ", tweet.activityType);	
 	}
 	console.log(activityFreq);
 
