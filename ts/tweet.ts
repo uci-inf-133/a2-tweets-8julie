@@ -43,7 +43,9 @@ class Tweet {
     //returns a boolean, whether the text includes any content written by the person tweeting.
     get written():boolean {
         //TODO: identify whether the tweet is written
-        return this.text != ""
+
+        // note: if the index is -1 then the tweet was written
+        return this.words.indexOf("-") == -1;
     }
 
     get writtenText():string {
@@ -51,11 +53,11 @@ class Tweet {
             return "";
         }
         else{
-            // this.text.replace(" ", "|");
-            return this.text;
+            var writtenIndex = this.words.indexOf("-");
+            var myTweetArray = this.getRawParsed(writtenIndex, -2);
+            return myTweetArray.join(" ");
         }
         //TODO: parse the written text from the tweet
-        // return "";
     }
 
     get activityType():string {
@@ -93,6 +95,16 @@ class Tweet {
     getHTMLTableRow(rowNumber:number):string {
         //TODO: return a table row which summarizes the tweet with a clickable link to the RunKeeper activity
         return "<tr></tr>";
+    }
+
+    getRawParsed(begin=0, end=0){
+        var words = this.text.split(" ");
+
+        if (end == 0){
+            end = words.length;
+        }
+
+        return words.slice(begin, end);
     }
 
     // parses the text into words (only to lower case)
