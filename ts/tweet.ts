@@ -2,12 +2,14 @@ class Tweet {
 	private text:string;
 	time:Date;
     words:Array<string>;
+    hasWritten:boolean;
     // activity:string;
 
 	constructor(tweet_text:string, tweet_time:string) {
         this.text = tweet_text;
 		this.time = new Date(tweet_time);//, "ddd MMM D HH:mm:ss Z YYYY"
         this.words = this.getParsed();
+        this.hasWritten = false;
 	}
 
 	//returns either 'live_event', 'achievement', 'completed_event', or 'miscellaneous'
@@ -23,7 +25,7 @@ class Tweet {
         // var containsCompletedEvent = completedEvent.some(word => this.text.includes(word))
 
         var isLive = this.words.includes("live");
-        var isCompleted = this.words.includes("completed")
+        var isCompleted = this.text.includes("completed a ");
         var isAchieved = this.words.includes("achieved") || this.words.includes("achievement")
 
         if (isLive) return 'live_event';
@@ -94,25 +96,19 @@ class Tweet {
     }
 
     get distance():number {
-        if(this.source != 'completed_event') {
-            return 0;
-        }
-        else{
-            for (var i = 0; i < this.words.length; i++){
-                var current = (this.words[i]);
+        for (var i = 0; i < this.words.length; i++){
+            var current = (this.words[i]);
 
-                try{
-                    var next = this.words[i+1]
+            try{
+                var next = this.words[i+1]
 
-                } catch(error: unknown){
-                    // Number was wrong
-                    return 0; 
-                }
+            } catch(error: unknown){
+                // Number was wrong
+                return 0; 
+            }
 
-                if (!isNaN(Number(current)) && (next == "km" || next == "mi")){
-                    return Number(current);
-                }
-
+            if (!isNaN(Number(current)) && (next == "km" || next == "mi")){
+                return Number(current);
             }
         }
         //TODO: prase the distance from the text of the tweet
@@ -140,12 +136,13 @@ class Tweet {
 
     // parses the text into words (only to lower case)
     getParsed(){
-
         this.words = this.text.toLowerCase()
-        .split(/([^a-zA-Z0-9https://t.co])/)
+        .split(/([^a-zA-Zhttps://t.co])/)
         .filter(myString => /\S/.test(myString));
 
-        // console.log(this.text, " into " ,this.words);
+        // if (this.text.includes("17.28km")){
+        //     console.log("printing: ", this.words);
+        // }
 
         return this.words
     }
