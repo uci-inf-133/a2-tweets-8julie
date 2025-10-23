@@ -13,8 +13,30 @@ class Tweet {
     get source():string {
         //TODO: identify whether the source is a live event, an achievement, a completed event, or miscellaneous.
 
-        
+        var liveEvent = 'Watch my run right now Live'.toLowerCase().split(" ");
+        var achievement = 'Achieved a new #FitnessAlerts'.toLowerCase().split(" ");
+        var completedEvent = 'Just completed a with'.toLocaleLowerCase().split(" ");
 
+        var containsLiveEvent = liveEvent.some(word => this.text.includes(word))
+        var containsAchievement = achievement.some(word => this.text.includes(word))
+        var containsCompletedEvent = completedEvent.some(word => this.text.includes(word))
+
+        if (containsLiveEvent){
+            return 'live_event';
+        }
+
+        if (containsAchievement){
+            return 'achievement';
+        }
+
+        if (containsCompletedEvent){
+            return 'completed_event';
+        }
+
+        if (!containsLiveEvent && !containsAchievement && !containsCompletedEvent){
+            return 'miscellaneous';
+        }
+        
         return "unknown";
     }
 
@@ -42,7 +64,7 @@ class Tweet {
         }
 
         else{
-            return this.text;
+            return this.source;
         }
         //TODO: parse the activity type from the text of the tweet
     }
@@ -50,6 +72,15 @@ class Tweet {
     get distance():number {
         if(this.source != 'completed_event') {
             return 0;
+        }
+        else{
+            for (var i = 0; i < this.words.length; i++){
+                var current = (this.words[i]);
+                var next = this.words[i+1]
+                if (!isNaN(Number(current)) && (next == "km" || next == "mi")){
+                    return Number(current);
+                }
+            }
         }
         //TODO: prase the distance from the text of the tweet
         return 0;
@@ -64,9 +95,9 @@ class Tweet {
         return "<tr></tr>";
     }
 
-    // parses the text into words
+    // parses the text into words (only to lower case)
     getParsed(){
-        this.words = this.text.split(" ");
+        this.words = this.text.toLowerCase().split(" ");
         return this.words
     }
 }
