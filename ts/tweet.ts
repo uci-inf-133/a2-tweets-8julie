@@ -2,14 +2,14 @@ class Tweet {
 	private text:string;
 	time:Date;
     words:Array<string>;
-    hasWritten:boolean;
+    measurement:string;
     // activity:string;
 
 	constructor(tweet_text:string, tweet_time:string) {
         this.text = tweet_text;
 		this.time = new Date(tweet_time);//, "ddd MMM D HH:mm:ss Z YYYY"
         this.words = this.getParsed();
-        this.hasWritten = false;
+        this.measurement = "mi";
 	}
 
 	//returns either 'live_event', 'achievement', 'completed_event', or 'miscellaneous'
@@ -114,7 +114,7 @@ class Tweet {
         //TODO: prase the distance from the text of the tweet
         return 0;
     }
-
+    
     myTweet():string{
         return this.text;
     }
@@ -139,6 +139,13 @@ class Tweet {
         this.words = this.text.toLowerCase()
         .split(/([^a-zA-Zhttps://t.co])/)
         .filter(myString => /\S/.test(myString));
+
+        if (this.words.includes("mi")){
+            this.measurement = "mi";
+        }
+        else{
+            this.measurement = "km";
+        }
 
         // if (this.text.includes("17.28km")){
         //     console.log("printing: ", this.words);
