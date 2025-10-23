@@ -9,8 +9,8 @@ function getSourceCount(tweet_array, source_target){
 	return count;
 }
 
-function calculatePct(count, total){
-	return count/total * 100;
+function getPct(count, total){
+	return (count/total * 100).toFixed(2).toString() + "%";
 }
 
 function parseTweets(runkeeper_tweets) {
@@ -34,6 +34,8 @@ function parseTweets(runkeeper_tweets) {
 	// alert("Page loaded!");
 	// });
 
+	const totalTweets = tweet_array.length;
+
 	const tweetsWrittenCount = tweet_array.reduce(function(counter, currentTweet){
 		if (currentTweet.written == true){
 			counter += 1;
@@ -46,7 +48,6 @@ function parseTweets(runkeeper_tweets) {
 	const completedEventCount = getSourceCount(tweet_array, 'completed_event');
 	const miscellaneousCount = getSourceCount(tweet_array, 'miscellaneous');
 
-	console.log("completedEventCount: ", completedEventCount)
 
 	var completedEventsElems = document.querySelectorAll("span[class='completedEvents']");
 	completedEventsElems.forEach(node => node.innerHTML = completedEventCount);
@@ -60,6 +61,15 @@ function parseTweets(runkeeper_tweets) {
 	var miscellaneousElems = document.querySelectorAll("span[class='miscellaneous']");
 	miscellaneousElems.forEach(node => node.innerHTML = miscellaneousCount);
 
+	// var completedEventsPct = document.querySelectorAll("span[class='completedEventsPct']");
+	// completedEventsPct.forEach(node => node.innerHTML = getPct(completedEventCount, totalTweets));	
+
+	document.querySelectorAll("span[class='completedEventsPct']").forEach(node => node.innerHTML = getPct(completedEventCount, totalTweets));	
+	document.querySelectorAll("span[class='liveEventsPct']").forEach(node => node.innerHTML = getPct(liveEventsCount, totalTweets));	
+	document.querySelectorAll("span[class='achievementsPct']").forEach(node => node.innerHTML = getPct(achievementsCount, totalTweets));	
+	document.querySelectorAll("span[class='miscellaneousPct']").forEach(node => node.innerHTML = getPct(miscellaneousCount, totalTweets));	
+	document.querySelectorAll("span[class='writtenPct']").forEach(node => node.innerHTML = getPct(tweetsWrittenCount, totalTweets));	
+	
 	// This works for one element
 	// var completedEventsElems = document.querySelector("span[class='completedEvents']");
 	// // completedEventsElems.namedItem
