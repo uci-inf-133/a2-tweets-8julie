@@ -2,6 +2,7 @@ class Tweet {
 	private text:string;
 	time:Date;
     words:Array<string>;
+    // activity:string;
 
 	constructor(tweet_text:string, tweet_time:string) {
         this.text = tweet_text;
@@ -13,30 +14,22 @@ class Tweet {
     get source():string {
         //TODO: identify whether the source is a live event, an achievement, a completed event, or miscellaneous.
 
-        var liveEvent = 'Watch my run right now Live'.toLowerCase().split(" ");
-        var achievement = 'Achieved a new #FitnessAlerts'.toLowerCase().split(" ");
-        var completedEvent = 'Just completed a with'.toLocaleLowerCase().split(" ");
+        // var liveEvent = 'Watch my run right now Live'.toLowerCase().split(" ");
+        // var achievement = 'Achieved a new #FitnessAlerts'.toLowerCase().split(" ");
+        // var completedEvent = 'completed'.toLocaleLowerCase().split(" ");
 
-        var containsLiveEvent = liveEvent.some(word => this.text.includes(word))
-        var containsAchievement = achievement.some(word => this.text.includes(word))
-        var containsCompletedEvent = completedEvent.some(word => this.text.includes(word))
+        // var containsLiveEvent = liveEvent.some(word => this.text.includes(word))
+        // var containsAchievement = achievement.some(word => this.text.includes(word))
+        // var containsCompletedEvent = completedEvent.some(word => this.text.includes(word))
 
-        if (containsLiveEvent){
-            return 'live_event';
-        }
+        var isLive = this.words.includes("live");
+        var isCompleted = this.words.includes("completed")
+        var isAchieved = this.words.includes("achieved") || this.words.includes("achievement")
 
-        if (containsAchievement){
-            return 'achievement';
-        }
-
-        if (containsCompletedEvent){
-            return 'completed_event';
-        }
-
-        if (!containsLiveEvent && !containsAchievement && !containsCompletedEvent){
-            return 'miscellaneous';
-        }
-        
+        if (isLive) return 'live_event';
+        if (isAchieved) return 'achievement';
+        if (isCompleted) return 'completed_event';
+        if (!isLive && !isAchieved && !isCompleted) return 'miscellaneous';
         return "unknown";
     }
 
@@ -60,12 +53,18 @@ class Tweet {
         //TODO: parse the written text from the tweet
     }
 
+    // my own code
+    isNumber(word:string): boolean{
+        return isNaN(Number(word));
+    }
+
     get activityType():string {
         var unknownActivity = "unknown";
 
-        var iStart = this.words.findIndex(word => word == "a") + 1;
-        var iEnd = this.words.findIndex(word => word == 'with' || word == '-' || word == 'in');
-        var myActivity = this.words.slice(iStart, iEnd);
+        if (this.source != 'completed_event') return unknownActivity;
+
+        var iStart = this.words.findIndex(word => word == 'km' || word == 'mi') + 1;
+        var iEnd = this.words.findIndex(word => word == 'with' || word == '-' || word == 'in' || word == '@');
 
         if (!isNaN(Number(this.words[iStart])) && 
         (this.words[iStart+1] == "km" || this.words[iStart+1] == "mi")){
@@ -78,7 +77,9 @@ class Tweet {
         // console.log("iStart:", iStart, this.words[iStart])
         // console.log("iEnd:", iEnd, this.words[iEnd])
 
-        return this.words.slice(iStart, iEnd).join(" ");
+        var myActivity = this.words.slice(iStart, iEnd).join(" ");
+
+        return myActivity;
 
         return unknownActivity;
         
@@ -139,7 +140,13 @@ class Tweet {
 
     // parses the text into words (only to lower case)
     getParsed(){
-        this.words = this.text.toLowerCase().split(" ");
+
+        this.words = this.text.toLowerCase()
+        .split(/([^a-zA-Z0-9https://t.co])/)
+        .filter(myString => /\S/.test(myString));
+
+        // console.log(this.text, " into " ,this.words);
+
         return this.words
     }
 }
