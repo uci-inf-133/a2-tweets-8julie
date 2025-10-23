@@ -53,6 +53,9 @@ function parseTweets(runkeeper_tweets) {
 	var completedEventsElems = document.querySelectorAll("span[class='completedEvents']");
 	completedEventsElems.forEach(node => node.innerHTML = completedEventCount);
 
+	var liveEventsElems = document.querySelectorAll("span[class='liveEvents']");
+	liveEventsElems.forEach(node => node.innerHTML = liveEventsCount);
+
 	// This works for one element
 	// var completedEventsElems = document.querySelector("span[class='completedEvents']");
 	// // completedEventsElems.namedItem
