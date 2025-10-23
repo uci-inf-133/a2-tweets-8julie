@@ -11,7 +11,48 @@ function parseTweets(runkeeper_tweets) {
 	
 	//This line modifies the DOM, searching for the tag with the numberTweets ID and updating the text.
 	//It works correctly, your task is to update the text of the other tags in the HTML file!
-	document.getElementById('numberTweets').innerText = tweet_array.length;	
+	document.getElementById('numberTweets').innerHTML = tweet_array.length;	
+
+	// my code:
+
+	const tweetsWrittenCount = tweet_array.reduce(function(counter, currentTweet){
+		if (currentTweet.written == true){
+			counter += 1;
+		}
+		return counter;
+	}, 0);
+
+	const liveEventsCount = tweet_array.reduce(function(counter, currentTweet){
+		if (currentTweet.source == 'live_event'){
+			counter += 1;
+		}
+		return counter;
+	}, 0);
+
+	const achievementsCount = tweet_array.reduce(function(counter, currentTweet){
+		if (currentTweet.source == 'achievement'){
+			counter += 1;
+		}
+		return counter;
+	}, 0);
+
+	const completedEventCount = tweet_array.reduce(function(counter, currentTweet){
+		if (currentTweet.source == 'completed_event'){
+			counter += 1;
+		}
+		return counter;
+	}, 0);
+
+
+	document.getElementsByClassName("completedEvents")[0].innerHTML = completedEventCount;
+
+	document.getElementsByClassName("completedEvents")[0].innerHTML = completedEventCount;
+
+    // <p>Testing: <span id="myTester">???</span> yup yup</p>
+
+	// var testerText = document.getElementById('myTester')[0].innerText;
+	// console.log(testerText,'heyyyyyy');
+
 }
 
 //Wait for the DOM to load
