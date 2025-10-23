@@ -105,22 +105,28 @@ function parseTweets(runkeeper_tweets) {
 
 
 
-	var exampleData = [
-	{"a": "A", "b": 28}, 
-	{"a": "B", "b": 55}, 
-	{"a": "C", "b": 43},
-    {"a": "D", "b": 91},
-	{"a": "E", "b": 81},
-	{"a": "F", "b": 53},
-    {"a": "G", "b": 19},
-	{"a": "H", "b": 87},
-	{"a": "I", "b": 52}];
-
+	// var exampleData = [
+	// {"a": "A", "b": 28}, 
+	// {"a": "B", "b": 55}, 
+	// {"a": "C", "b": 43},
+    // {"a": "D", "b": 91},
+	// {"a": "E", "b": 81},
+	// {"a": "F", "b": 53},
+    // {"a": "G", "b": 19},
+	// {"a": "H", "b": 87},
+	// {"a": "I", "b": 52}];
 	var exampleMark = "bar";
-	var exampleEncoding = {
+	// var exampleEncoding = {
+	// "x": {"field": a, "type": "nominal", "axis": {"labelAngle": 0}},
+    // "y": {"field": b, "type": "quantitative"}
+	// };
+
+	var frequencyMark = "point";
+	var frequencyEncoding = {
 	"x": {"field": frequency_xLabel, "type": "nominal", "axis": {"labelAngle": 0}},
     "y": {"field": frequency_yLabel, "type": "quantitative"}
 	};
+
 
 	// console.log(frequencyData);
 	// console.log(exampleData);
@@ -131,8 +137,8 @@ function parseTweets(runkeeper_tweets) {
 	  "data": {
 	    "values": frequencyData		
 	  },
-	  "mark": exampleMark,
-	  "encoding": exampleEncoding
+	  "mark": "point",
+	  "encoding": frequencyEncoding
 
 	  //TODO: Add mark and encoding
 	};
