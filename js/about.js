@@ -61,6 +61,9 @@ function parseTweets(runkeeper_tweets) {
 	var miscellaneousElems = document.querySelectorAll("span[class='miscellaneous']");
 	miscellaneousElems.forEach(node => node.innerHTML = miscellaneousCount);
 
+	var writtenElems = document.querySelectorAll("span[class='written']");
+	writtenElems.forEach(node => node.innerHTML = tweetsWrittenCount);
+
 	// var completedEventsPct = document.querySelectorAll("span[class='completedEventsPct']");
 	// completedEventsPct.forEach(node => node.innerHTML = getPct(completedEventCount, totalTweets));	
 
