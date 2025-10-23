@@ -61,6 +61,27 @@ class Tweet {
     }
 
     get activityType():string {
+        var unknownActivity = "unknown";
+
+        var iStart = this.words.findIndex(word => word == "a") + 1;
+        var iEnd = this.words.findIndex(word => word == 'with' || word == '-' || word == 'in');
+        var myActivity = this.words.slice(iStart, iEnd);
+
+        if (!isNaN(Number(this.words[iStart])) && 
+        (this.words[iStart+1] == "km" || this.words[iStart+1] == "mi")){
+            iStart += 2;
+        }
+        
+        // console.log("all: ", this.words);        
+        // console.log("test:", myActivity);
+
+        // console.log("iStart:", iStart, this.words[iStart])
+        // console.log("iEnd:", iEnd, this.words[iEnd])
+
+        return this.words.slice(iStart, iEnd).join(" ");
+
+        return unknownActivity;
+        
         if (this.source != 'completed_event') {
             return "unknown";
         }
