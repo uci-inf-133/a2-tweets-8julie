@@ -47,6 +47,13 @@ function parseTweets(runkeeper_tweets) {
 		return counter;
 	}, 0);
 
+	const miscellaneousCount = tweet_array.reduce(function(counter, currentTweet){
+		if (currentTweet.source == 'miscellaneous'){
+			counter += 1;
+		}
+		return counter;
+	}, 0);
+
 
 	console.log("completedEventCount: ", completedEventCount)
 
@@ -58,6 +65,9 @@ function parseTweets(runkeeper_tweets) {
 
 	var achievementsElems = document.querySelectorAll("span[class='achievements']");
 	achievementsElems.forEach(node => node.innerHTML = achievementsCount);
+
+	var miscellaneousElems = document.querySelectorAll("span[class='miscellaneous']");
+	miscellaneousElems.forEach(node => node.innerHTML = miscellaneousCount);
 
 	// This works for one element
 	// var completedEventsElems = document.querySelector("span[class='completedEvents']");
