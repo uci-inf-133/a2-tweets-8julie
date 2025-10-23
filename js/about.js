@@ -1,3 +1,18 @@
+function getSourceCount(tweet_array, source_target){
+	const count = tweet_array.reduce(function(counter, currentTweet){
+	if (currentTweet.source == source_target){
+		counter += 1;
+	}
+	return counter;
+}, 0);
+
+	return count;
+}
+
+function calculatePct(count, total){
+	return count/total * 100;
+}
+
 function parseTweets(runkeeper_tweets) {
 	//Do not proceed if no tweets loaded
 	if(runkeeper_tweets === undefined) {
@@ -15,9 +30,9 @@ function parseTweets(runkeeper_tweets) {
 	document.getElementById('numberTweets').innerHTML = tweet_array.length;	
 
 	// my code:
-	document.addEventListener('DOMContentLoaded', function (event) {
-	alert("Page loaded!");
-	});
+	// document.addEventListener('DOMContentLoaded', function (event) {
+	// alert("Page loaded!");
+	// });
 
 	const tweetsWrittenCount = tweet_array.reduce(function(counter, currentTweet){
 		if (currentTweet.written == true){
@@ -26,34 +41,10 @@ function parseTweets(runkeeper_tweets) {
 		return counter;
 	}, 0);
 
-	const liveEventsCount = tweet_array.reduce(function(counter, currentTweet){
-		if (currentTweet.source == 'live_event'){
-			counter += 1;
-		}
-		return counter;
-	}, 0);
-
-	const achievementsCount = tweet_array.reduce(function(counter, currentTweet){
-		if (currentTweet.source == 'achievement'){
-			counter += 1;
-		}
-		return counter;
-	}, 0);
-
-	const completedEventCount = tweet_array.reduce(function(counter, currentTweet){
-		if (currentTweet.source == 'completed_event'){
-			counter += 1;
-		}
-		return counter;
-	}, 0);
-
-	const miscellaneousCount = tweet_array.reduce(function(counter, currentTweet){
-		if (currentTweet.source == 'miscellaneous'){
-			counter += 1;
-		}
-		return counter;
-	}, 0);
-
+	const liveEventsCount = getSourceCount(tweet_array, 'live_event');
+	const achievementsCount = getSourceCount(tweet_array, 'achievement');
+	const completedEventCount = getSourceCount(tweet_array, 'completed_event');
+	const miscellaneousCount = getSourceCount(tweet_array, 'miscellaneous');
 
 	console.log("completedEventCount: ", completedEventCount)
 
