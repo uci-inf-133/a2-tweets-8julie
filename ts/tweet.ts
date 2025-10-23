@@ -66,7 +66,7 @@ class Tweet {
         }
 
         else{
-            return this.source;
+            return this.words[6];
         }
         //TODO: parse the activity type from the text of the tweet
     }
@@ -78,10 +78,19 @@ class Tweet {
         else{
             for (var i = 0; i < this.words.length; i++){
                 var current = (this.words[i]);
-                var next = this.words[i+1]
+
+                try{
+                    var next = this.words[i+1]
+
+                } catch(error: unknown){
+                    // Number was wrong
+                    return 0; 
+                }
+
                 if (!isNaN(Number(current)) && (next == "km" || next == "mi")){
                     return Number(current);
                 }
+
             }
         }
         //TODO: prase the distance from the text of the tweet
