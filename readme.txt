@@ -8,11 +8,12 @@
 - */3 Adding a text earch interface
 
 2. How long, in hours, did it take you to complete this assignment?
-
+3
 
 
 3. What online resources did you consult when completing this assignment? (list sites like StackOverflow or specific URLs for tutorials; describe queries to Generative AI or use of AI-based code completion)
-
+- StackOverflow to read about npm/nvm/nodejs/ installation and get a bit more context: https://stackoverflow.com/questions/20992723/npm-is-not-recognized-as-internal-or-external-command-operable-program-or-bat
+- 
 
 
 4. What classmates or other individuals did you consult as part of this assignment? What did you discuss?
