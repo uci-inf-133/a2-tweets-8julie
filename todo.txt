@@ -1,0 +1,3 @@
+- figure out how to apply all classes with index.html (namely class="completedEvents")
+- link all class ids in about.js 
+- start on other js/.js files
