@@ -76,12 +76,6 @@ class Tweet {
         (this.words[iStart+1] == "km" || this.words[iStart+1] == "mi")){
             iStart += 2;
         }
-        
-        // console.log("all: ", this.words);        
-        // console.log("test:", myActivity);
-
-        // console.log("iStart:", iStart, this.words[iStart])
-        // console.log("iEnd:", iEnd, this.words[iEnd])
 
         var myActivity = this.words.slice(iStart, iEnd).join(" ");
 
@@ -100,21 +94,20 @@ class Tweet {
     }
 
     get distance():number {
-        for (var i = 0; i < this.words.length; i++){
-            var current = (this.words[i]);
 
-            try{
-                var next = this.words[i+1]
+        // var iStart = this.words.findIndex(word => word == 'km' || word == 'mi') + 1;
+        // var iEnd = this.words.findIndex(word => word == 'with' || word == '-' || word == 'in' || word == '@');
 
-            } catch(error: unknown){
-                // Number was wrong
-                return 0; 
-            }
+        var iStart = this.words.findIndex(word => word == 'a') + 1;
+        var iEnd = this.words.findIndex(word => word == 'km' || word == 'mi');
 
-            if (!isNaN(Number(current)) && (next == "km" || next == "mi")){
-                return Number(current);
-            }
+        if (iStart == -1 || iEnd == -1){
+            return 0;
         }
+
+        return Number(this.words.slice(iStart, iEnd).join(""));
+
+
         //TODO: prase the distance from the text of the tweet
         return 0;
     }
