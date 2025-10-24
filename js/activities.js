@@ -59,18 +59,23 @@ function parseTweets(runkeeper_tweets) {
 	// of tweets containing each type of activity.
 
 	var activityFreq = new Map();
-	// for each tweet
-	// get the activityType
-	// and increase by 1
+	var averages = new Map();
+	var frequencies = new Map();
+
+	var longest = -1;
+	var shortest = -1;
 
 	for (let i = 0; i < tweet_array.length; i++){
 		// console.log(tweet_array[i].activityType);
 		var currentType = tweet_array[i].activityType;
 		var currentDistance = tweet_array[i].distance;
 		var currentMeasurement = tweet_array[i].measurement;
+		var currentDay = tweet_array[i].dayOfWeek;
+
 		var item = activityFreq.get(currentType);
 
 		if (item == undefined){
+
 			var d = new Distance();
 			d.insertValue(currentDistance, currentMeasurement);
 			activityFreq.set(currentType, d);
@@ -84,8 +89,6 @@ function parseTweets(runkeeper_tweets) {
 
 	// activityFreq = [activityFreq];
 
-	var averages = new Map();
-	var frequencies = new Map();
 	activityFreq.forEach((value, key) => {
 		averages.set(key, value.average());
 		frequencies.set(key, value.size());
