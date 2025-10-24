@@ -44,7 +44,7 @@ class Tweet {
         //TODO: identify whether the tweet is written
 
         // note: if the index is -1 then the tweet was written
-        return this.words.indexOf("-") == -1;
+        return this.words.includes("-");
     }
 
     get writtenText():string {
@@ -52,9 +52,18 @@ class Tweet {
             return "";
         }
         else{
-            var writtenIndex = this.words.indexOf("-");
-            var myTweetArray = this.getRawParsed(writtenIndex, -2);
-            return myTweetArray.join(" ");
+            var iStart = this.words.findIndex(value => value == "-") + 1; 
+            // it's very important that we only get the FIRST dash
+            // because tweets can contain these dashes too
+
+            var iEnd = this.words.findIndex(value => value.includes("http"));
+            var iEndHashTagFirst = this.words.findLastIndex(value => value.includes("#"));
+
+            if (iEnd > iEndHashTagFirst){
+                iEnd = iEndHashTagFirst;
+            }
+
+            return this.words.slice(iStart, iEnd).join(" ");
         }
         //TODO: parse the written text from the tweet
     }
@@ -130,7 +139,7 @@ class Tweet {
 
     // parses the text into words (only to lower case)
     getParsed(){
-        this.words = this.text.toLowerCase()
+        this.words = this.text
         .split(/([^a-zA-Zhttps://t.co])/)
         .filter(myString => /\S/.test(myString));
 
