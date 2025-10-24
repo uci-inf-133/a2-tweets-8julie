@@ -35,7 +35,7 @@ function parseTweets(runkeeper_tweets) {
 	// of tweets containing each type of activity.
 
 	var rows = [];
-	var highestDistance = -1;
+	// var highestDistance = -1;
 	var activityTypes = new Set();
 
 
@@ -67,7 +67,7 @@ function parseTweets(runkeeper_tweets) {
 
 	}
 
-	console.log(highestDistance);
+	// console.log(highestDistance);
 
 	// console.log(rows);
 
@@ -123,7 +123,10 @@ function parseTweets(runkeeper_tweets) {
 	//TODO: create the visualizations which group the three most-tweeted activities by the day of the week.
 	//Use those visualizations to answer the questions about which activities tended to be longest and when.
 
-	
+	var numberActivities = 	document.querySelectorAll("span[id='numberActivities']");
+	numberActivities.forEach(node => node.innerHTML = activityTypes.size);
+
+
 }
 
 //Wait for the DOM to load
