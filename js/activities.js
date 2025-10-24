@@ -7,45 +7,17 @@ function getDayOfWeek(number){
 	return dayNames[number];
 }
 
-function simplifyActivity(activity){
+// function simplifyActivity(activity){
 
-	var enduranceSport = ["run", "bike", "walk", "row"]
-	if (enduranceSport.includes(activity)){
-		return "enduranceSport";
-	} 
-	else{
-		return "other";
-	}
-}
+// 	var enduranceSport = ["run", "bike", "walk", "row"]
+// 	if (enduranceSport.includes(activity)){
+// 		return "enduranceSport";
+// 	} 
+// 	else{
+// 		return "other";
+// 	}
+// }
 
-class Distance {
-    values = [];
-    constructor() {
-        // this.activityType = activityType;
-        this.values = [];
-    }
-
-    average() {
-        var size = this.values.length;
-        var total = this.values.reduce((sum, current) => sum + current, 0);
-        return (total / size).toFixed(2);
-    }
-
-    size() {
-        return this.values.length;
-    }
-
-    insertValue(value, measurement) {
-
-		// convert all to miles
-		if (measurement == "km"){
-			// apparently kkilometersToMiles also works?
-			value = value * 0.621371;
-		}
-
-		this.values.push(value);
-    }
-}
 
 function parseTweets(runkeeper_tweets) {
 	//Do not proceed if no tweets loaded
@@ -63,27 +35,23 @@ function parseTweets(runkeeper_tweets) {
 	// of tweets containing each type of activity.
 
 	var rows = [];
-	var highest = {};
-	var loweest = {};
+	var highestDistance = -1;
+	var activityTypes = new Set();
 
 
 	for (let i = 0; i < tweet_array.length; i++){
 
-		var currentType = simplifyActivity(tweet_array[i].activityType);
-
+		var currentType = tweet_array[i].activityType;  // you can also use simplifyActivity
 		var currentMeasurement = tweet_array[i].measurement;
 		var currentDistance = tweet_array[i].distance;
-		if (currentMeasurement == "km") currentDistance = convertToMiles(currentDistance)
+		if (currentMeasurement == "km") currentDistance;
 
 		var currentDay = tweet_array[i].time;
+		activityTypes.add(currentType);
 
-		// if (rows.si == 0){
-		// 	lowestDistance = currentDistance;
+		// if (currentDistance > highestDistance) {
 		// 	highestDistance = currentDistance;
-		// }
-		// else{
-		// 	if (currentDistance > highestDistance) highestDistance = currentDistance;
-		// 	if (currentDistance < lowestDistance) lowestDistance = currentDistance;
+		// 	console.log(tweet_array[i].myTweet(), " with ", currentDistance, " and: ", tweet_array[i].words);
 		// }
 
 		rows.push({ 
@@ -92,43 +60,61 @@ function parseTweets(runkeeper_tweets) {
 			"dayOfWeek" : currentDay
 		})
 
+		// if (currentDistance != NaN){
+		// 	console.log(tweet_array[i].myTweet(), " with ", currentDistance, " and: ", tweet_array[i].words);
+		// }
+
+
 	}
 
-	console.log(rows);
+	console.log(highestDistance);
+
+	// console.log(rows);
 
 	activity_vis_spec = {
-  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
-  "description": "A scatterplot the day of the week and distance of activity.",
-    "autosize": {
-    "type": "fit",
-    "contains": "padding"
-  },
-  "height" : 400,
-  "width" : 600,
-  "data": {
-    "values": rows,
-},
-  "mark": "point",
-  "encoding": {
-    "x": {
-      "field": "dayOfWeek",
-	  "title": "Day of the week",
-	//   "bandPosition": 0,
-	  "type": "temporal",
-	  "timeUnit": "day"
-    },
-    "y": {
-      "field": "distance",
-      "type": "quantitative",
-	  "title": "Distance",
-	//   "aggregate": "average" /// THIS IS FOR LATER
+		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+		"description": "A scatterplot the day of the week and distance of activity.",
+		// "autosize": {
+		// 	"type": "fit",
+		// 	"contains": "padding"
+		// },
+		"height" : 400,
+		"width" : 500,
+		"data": {
+			"values": rows,
+		},
+		"mark": {
+			"type":"point",
+			"clip":true
+		},
+		"encoding": {
+			"x": {
+				"field": "dayOfWeek",
+				"title": "Day of the week",
+				"bandPosition": 0,
+				"type": "temporal",
+				"timeUnit": "day",
+				// "scale":{
+				// 	"type":"time"
+				// }
+			},
+			"y": {
+				"field": "distance",
+				"type": "quantitative",
+				"title": "Distance (miles)",
+				"scale": {
+					// "type": "linear" 
+					// couldn't do the above code because random guy decided to swim for like a thousand miles
+					"domain": [0, 80],
+					"clamp": true
+				},
+				// "aggregate": "average" /// THIS IS FOR LATER
+			},
 
-    },
-    "color": {
-		"field": "activityType", 
-		"type": "nominal"
-	}
-    // "shape": {"field": "Species", "type": "nominal"}
+		"color": {
+			"field": "activityType", 
+			"type": "nominal"
+		}
   }
 };
 
@@ -136,6 +122,8 @@ function parseTweets(runkeeper_tweets) {
 
 	//TODO: create the visualizations which group the three most-tweeted activities by the day of the week.
 	//Use those visualizations to answer the questions about which activities tended to be longest and when.
+
+	
 }
 
 //Wait for the DOM to load
