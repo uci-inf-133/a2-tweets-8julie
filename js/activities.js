@@ -7,6 +7,17 @@ function getDayOfWeek(number){
 	return dayNames[number];
 }
 
+function simplifyActivity(activity){
+
+	var enduranceSport = ["run", "bike", "walk", "row"]
+	if (enduranceSport.includes(activity)){
+		return "enduranceSport";
+	} 
+	else{
+		return "other";
+	}
+}
+
 class Distance {
     values = [];
     constructor() {
@@ -51,23 +62,36 @@ function parseTweets(runkeeper_tweets) {
 	// manipulate tweet_array to create a graph of the number 
 	// of tweets containing each type of activity.
 
-	var labels = ["activityType", "distance", "dayOfWeek"];
 	var rows = [];
+	var highest = {};
+	var loweest = {};
+
+
 	for (let i = 0; i < tweet_array.length; i++){
-		// console.log(tweet_array[i].activityType);
-		var currentType = tweet_array[i].activityType;
+
+		var currentType = simplifyActivity(tweet_array[i].activityType);
 
 		var currentMeasurement = tweet_array[i].measurement;
 		var currentDistance = tweet_array[i].distance;
 		if (currentMeasurement == "km") currentDistance = convertToMiles(currentDistance)
 
-		var currentDay = getDayOfWeek(tweet_array[i].dayOfWeek);
+		var currentDay = tweet_array[i].time;
+
+		// if (rows.si == 0){
+		// 	lowestDistance = currentDistance;
+		// 	highestDistance = currentDistance;
+		// }
+		// else{
+		// 	if (currentDistance > highestDistance) highestDistance = currentDistance;
+		// 	if (currentDistance < lowestDistance) lowestDistance = currentDistance;
+		// }
 
 		rows.push({ 
 			"activityType" : currentType,
 			"distance" : currentDistance,
 			"dayOfWeek" : currentDay
 		})
+
 	}
 
 	console.log(rows);
@@ -75,21 +99,35 @@ function parseTweets(runkeeper_tweets) {
 	activity_vis_spec = {
   "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
   "description": "A scatterplot the day of the week and distance of activity.",
+    "autosize": {
+    "type": "fit",
+    "contains": "padding"
+  },
+  "height" : 400,
+  "width" : 600,
   "data": {
     "values": rows,
-  },
+},
   "mark": "point",
   "encoding": {
     "x": {
       "field": "dayOfWeek",
-      "type": "nominal"
+	  "title": "Day of the week",
+	//   "bandPosition": 0,
+	  "type": "temporal",
+	  "timeUnit": "day"
     },
     "y": {
       "field": "distance",
       "type": "quantitative",
-	  "aggregate": "average"
+	  "title": "Distance",
+	//   "aggregate": "average" /// THIS IS FOR LATER
+
     },
-    "color": {"field": "activityType", "type": "nominal"}
+    "color": {
+		"field": "activityType", 
+		"type": "nominal"
+	}
     // "shape": {"field": "Species", "type": "nominal"}
   }
 };
