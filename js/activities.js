@@ -1,17 +1,10 @@
-function createData(x_label, y_label, rawMap){
-	var data = [];
-
-
-	rawMap.forEach((value, key) => {
-		// console.log(value, key);
-		data.push({ [x_label] : key, [y_label] : value});
-	});
-
-	return data;
+function convertToMiles(inKm){
+	return inKm * 0.621371;
 }
 
-function createEncoding(){
-
+function getDayOfWeek(number){
+	var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+	return dayNames[number];
 }
 
 class Distance {
@@ -58,93 +51,49 @@ function parseTweets(runkeeper_tweets) {
 	// manipulate tweet_array to create a graph of the number 
 	// of tweets containing each type of activity.
 
-	var activityFreq = new Map();
-	var averages = new Map();
-	var frequencies = new Map();
-
-	var longest = -1;
-	var shortest = -1;
-
+	var labels = ["activityType", "distance", "dayOfWeek"];
+	var rows = [];
 	for (let i = 0; i < tweet_array.length; i++){
 		// console.log(tweet_array[i].activityType);
 		var currentType = tweet_array[i].activityType;
-		var currentDistance = tweet_array[i].distance;
+
 		var currentMeasurement = tweet_array[i].measurement;
-		var currentDay = tweet_array[i].dayOfWeek;
+		var currentDistance = tweet_array[i].distance;
+		if (currentMeasurement == "km") currentDistance = convertToMiles(currentDistance)
 
-		var item = activityFreq.get(currentType);
+		var currentDay = getDayOfWeek(tweet_array[i].dayOfWeek);
 
-		if (item == undefined){
-
-			var d = new Distance();
-			d.insertValue(currentDistance, currentMeasurement);
-			activityFreq.set(currentType, d);
-		}
-		else{
-			// currentCount += 1
-			activityFreq.get(currentType).insertValue(currentDistance, currentMeasurement);
-			// activityFreq.set(currentType, currentCount);
-		}
+		rows.push({ 
+			"activityType" : currentType,
+			"distance" : currentDistance,
+			"dayOfWeek" : currentDay
+		})
 	}
 
-	// activityFreq = [activityFreq];
-
-	activityFreq.forEach((value, key) => {
-		averages.set(key, value.average());
-		frequencies.set(key, value.size());
-	});
-
-
-	var frequency_xLabel = "Activity Type";
-	var frequency_yLabel = "Frequency";
-
-	var average_xLabel = "Activity Type";
-	var average_yLabel = "Average distance (miles)";
-
-	var averageData = createData(average_xLabel, average_yLabel, averages);
-	var frequencyData = createData(frequency_xLabel, frequency_yLabel, frequencies);
-
-	// forEach(node => node.innerHTML = completedEventCount);
-
-
-
-	// var exampleData = [
-	// {"a": "A", "b": 28}, 
-	// {"a": "B", "b": 55}, 
-	// {"a": "C", "b": 43},
-    // {"a": "D", "b": 91},
-	// {"a": "E", "b": 81},
-	// {"a": "F", "b": 53},
-    // {"a": "G", "b": 19},
-	// {"a": "H", "b": 87},
-	// {"a": "I", "b": 52}];
-	var exampleMark = "bar";
-	// var exampleEncoding = {
-	// "x": {"field": a, "type": "nominal", "axis": {"labelAngle": 0}},
-    // "y": {"field": b, "type": "quantitative"}
-	// };
-
-	var frequencyMark = "point";
-	var frequencyEncoding = {
-	"x": {"field": frequency_xLabel, "type": "nominal", "axis": {"labelAngle": 0}},
-    "y": {"field": frequency_yLabel, "type": "quantitative"}
-	};
-
-
-	// console.log(frequencyData);
-	// console.log(exampleData);
+	console.log(rows);
 
 	activity_vis_spec = {
-	  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-	  "description": "A graph of the number of Tweets containing each type of activity.",
-	  "data": {
-	    "values": frequencyData		
-	  },
-	  "mark": "point",
-	  "encoding": frequencyEncoding
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "description": "A scatterplot the day of the week and distance of activity.",
+  "data": {
+    "values": rows,
+  },
+  "mark": "point",
+  "encoding": {
+    "x": {
+      "field": "dayOfWeek",
+      "type": "nominal"
+    },
+    "y": {
+      "field": "distance",
+      "type": "quantitative",
+	  "aggregate": "average"
+    },
+    "color": {"field": "activityType", "type": "nominal"}
+    // "shape": {"field": "Species", "type": "nominal"}
+  }
+};
 
-	  //TODO: Add mark and encoding
-	};
 	vegaEmbed('#activityVis', activity_vis_spec, {actions:false});
 
 	//TODO: create the visualizations which group the three most-tweeted activities by the day of the week.
