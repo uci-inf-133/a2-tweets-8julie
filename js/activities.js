@@ -35,7 +35,6 @@ function parseTweets(runkeeper_tweets) {
 	// of tweets containing each type of activity.
 
 	var rows = [];
-	// var highestDistance = -1;
 	var activityTypes = new Set();
 
 
@@ -49,27 +48,12 @@ function parseTweets(runkeeper_tweets) {
 		var currentDay = tweet_array[i].time;
 		activityTypes.add(currentType);
 
-		// if (currentDistance > highestDistance) {
-		// 	highestDistance = currentDistance;
-		// 	console.log(tweet_array[i].myTweet(), " with ", currentDistance, " and: ", tweet_array[i].words);
-		// }
-
 		rows.push({ 
 			"activityType" : currentType,
 			"distance" : currentDistance,
-			"dayOfWeek" : currentDay
+			"date" : currentDay
 		})
-
-		// if (currentDistance != NaN){
-		// 	console.log(tweet_array[i].myTweet(), " with ", currentDistance, " and: ", tweet_array[i].words);
-		// }
-
-
 	}
-
-	// console.log(highestDistance);
-
-	// console.log(rows);
 
 	activity_vis_spec = {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
@@ -89,7 +73,7 @@ function parseTweets(runkeeper_tweets) {
 		},
 		"encoding": {
 			"x": {
-				"field": "dayOfWeek",
+				"field": "date",
 				"title": "Day of the week",
 				"bandPosition": 0,
 				"type": "temporal",
@@ -125,8 +109,6 @@ function parseTweets(runkeeper_tweets) {
 
 	var numberActivities = 	document.querySelectorAll("span[id='numberActivities']");
 	numberActivities.forEach(node => node.innerHTML = activityTypes.size);
-
-
 }
 
 //Wait for the DOM to load
