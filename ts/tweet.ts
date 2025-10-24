@@ -95,9 +95,6 @@ class Tweet {
 
     get distance():number {
 
-        // var iStart = this.words.findIndex(word => word == 'km' || word == 'mi') + 1;
-        // var iEnd = this.words.findIndex(word => word == 'with' || word == '-' || word == 'in' || word == '@');
-
         var iStart = this.words.findIndex(word => word == 'a') + 1;
         var iEnd = this.words.findIndex(word => word == 'km' || word == 'mi');
 
