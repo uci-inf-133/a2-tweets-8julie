@@ -36,7 +36,7 @@ function parseTweets(runkeeper_tweets) {
 	tweet_array = tweet_array.filter((tweets) => tweets.source == "completed_event");
 
 	var rows = [];
-	var activityTypes = new Set();
+	var freq = new Object();
 
 
 	for (let i = 0; i < tweet_array.length; i++){
@@ -46,7 +46,13 @@ function parseTweets(runkeeper_tweets) {
 		if (currentMeasurement == "km") currentDistance;
 
 		var currentDay = tweet_array[i].time;
-		activityTypes.add(currentType);
+
+		if (freq[currentType] == undefined){
+			freq[currentType] = 1;
+		}
+		else{
+			freq[currentType] += 1;
+		}
 
 		rows.push({ 
 			"activityType" : currentType,
@@ -108,7 +114,7 @@ function parseTweets(runkeeper_tweets) {
 	//Use those visualizations to answer the questions about which activities tended to be longest and when.
 
 	var numberActivities = 	document.querySelectorAll("span[id='numberActivities']");
-	numberActivities.forEach(node => node.innerHTML = activityTypes.size);
+	numberActivities.forEach(node => node.innerHTML = Object.keys(freq).length);
 }
 
 //Wait for the DOM to load
