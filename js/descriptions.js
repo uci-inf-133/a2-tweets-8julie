@@ -20,9 +20,22 @@ function parseTweets(runkeeper_tweets) {
 		return new Tweet(tweet.text, tweet.created_at);
 	});
 
-
 	//TODO: Filter to just the written tweets
-	var writtenOnly = tweet_array.filter(tweet => tweet.written == true);
+	writtenOnly = tweet_array.filter(tweet => tweet.written == true);
+
+	// writtenOnly.forEach((item, index) => {
+	// 	if (item.text.includes(searchStr)){
+	// 		resultStr += item.getHTMLTableRow(index) + "\n";
+	// 	}
+	// });
+
+	// var logTarget = document.querySelector("tbody[id='tweetTable']");
+	// logTarget.innerHTML = resultStr;
+}
+
+function myListener(event){
+	searchStr = event.target.value;
+
 	writtenOnly.forEach((item, index) => {
 		if (item.text.includes(searchStr)){
 			resultStr += item.getHTMLTableRow(index) + "\n";
@@ -31,6 +44,7 @@ function parseTweets(runkeeper_tweets) {
 
 	var logTarget = document.querySelector("tbody[id='tweetTable']");
 	logTarget.innerHTML = resultStr;
+
 }
 
 function addEventHandlerForSearch() {
@@ -44,7 +58,8 @@ function addEventHandlerForSearch() {
 		logElement.innerHTML = searchStr;	// yyayyy
 		console.log(e.target.value); // current value
 
-		myEvent = e;
+		myListener(e);
+
 	});
 
 }
