@@ -23,24 +23,8 @@ function parseTweets(runkeeper_tweets) {
 		}
 	});
 
-	// console.log("search string: ", searchStr, " input element: ", ${});
-
 	var logTarget = document.querySelector("tbody[id='tweetTable']");
-	
-	// logTarget.innerHTML = 
-
-	function handleEvent(event){
-		searchTerm = event.target.value;
-		
-
-	}
-// forEach(node => node.innerHTML = activityTypes.size);
-    // const searchInput = document.querySelector("span[id='searchCount']");
-	// searchInput.onsearch = () => {
-	// 	console.log(`The term searched for was ${searchInput.value}`);
-	// };
-
-	// console.log(rows);
+	logTarget.innerHTML = resultStr;
 }
 
 function addEventHandlerForSearch() {
