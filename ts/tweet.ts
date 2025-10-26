@@ -117,18 +117,16 @@ class Tweet {
         //TODO: prase the distance from the text of the tweet
         return 0;
     }
-    
-    myTweet():string{
-        return this.text;
-    }
 
     getHTMLTableRow(rowNumber:number):string {
         //TODO: return a table row which summarizes the tweet with a clickable link to the RunKeeper activity
 
         var myStr = `
+        <tr>
             <td scope="row">${rowNumber}</td>
             <td scope="row">${this.activityType}</td>
             <td scope="row">${this.text}</td>
+        </tr>
         `;
 
         

@@ -52,7 +52,7 @@ function myListener(event){
 		var count = 0;
 
 		resultTweets.forEach((tweet, index) => {
-			resultStr += `<tr><th scope="row">${index}</th>` + tweet.getHTMLTableRow(0);
+			resultStr += tweet.getHTMLTableRow(index);
 			count += 1;
 		});
 		
