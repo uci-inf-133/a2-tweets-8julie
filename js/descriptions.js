@@ -17,17 +17,8 @@ function parseTweets(runkeeper_tweets) {
 		return new Tweet(tweet.text, tweet.created_at);
 	});
 
-	writtenOnly = tweet_array.filter(tweet => tweet.written == true);
-
 	//TODO: Filter to just the written tweets
-	// writtenOnly.forEach((item, index) => {
-	// 	if (item.text.includes(searchStr)){
-	// 		resultStr += item.getHTMLTableRow(index) + "\n";
-	// 	}
-	// });
-
-	// var logTarget = document.querySelector("tbody[id='tweetTable']");
-	// logTarget.innerHTML = resultStr;
+	writtenOnly = tweet_array.filter(tweet => tweet.written == true);
 }
 
 function myListener(event){
