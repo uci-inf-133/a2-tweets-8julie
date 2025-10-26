@@ -1,9 +1,7 @@
 var searchStr = "default search term";
-var resultStr = `
+var defaultStr = `
     <tr>
-            <th scope="row">None</th>
-            <th scope="row">No Activity</th>
-            <th scope="row">No Tweet</th>
+
     </tr>
 `;
 
@@ -34,9 +32,9 @@ function parseTweets(runkeeper_tweets) {
 
 function myListener(event){
 	searchStr = event.target.value;
+	var count = 0;
 
 	function getResult(){
-
 		var resultTweets = [];
 
 		resultStr = "";
@@ -49,21 +47,22 @@ function myListener(event){
 			}
 		});
 
-		var count = 0;
-
 		resultTweets.forEach((tweet, index) => {
-			resultStr += tweet.getHTMLTableRow(index);
+			resultStr += tweet.getHTMLTableRow(index + 1);
 			count += 1;
 		});
-		
-		document.querySelector("span[id='searchCount']").innerHTML = count;
-
 	}
 
-	getResult();
+	if (searchStr == ""){
+		resultStr = defaultStr;
+	}
+	else{
+		getResult();
+	}
 
 	var logTarget = document.querySelector("tbody[id='tweetTable']");
 	logTarget.innerHTML = resultStr;
+	document.querySelector("span[id='searchCount']").innerHTML = count;
 }
 
 function addEventHandlerForSearch() {
