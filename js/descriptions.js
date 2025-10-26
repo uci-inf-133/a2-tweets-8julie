@@ -1,5 +1,4 @@
 var searchStr = "default search term";
-var myEvent = new Event("keyup");
 var resultStr = `
     <tr>
             <th scope="row">None</th>
@@ -37,14 +36,28 @@ function myListener(event){
 	searchStr = event.target.value;
 
 	function getResult(){
+
+		var resultTweets = [];
+
 		resultStr = "";
-		writtenOnly.forEach((item, index) => {
+
+		writtenOnly.forEach((item) => {
 			var writtenText = item.writtenText;
 			if (writtenText.includes(searchStr)){
-				console.log(index);
-				resultStr += item.getHTMLTableRow(index);
+				// console.log(index);
+				resultTweets.push(item); // you don't need the index
 			}
 		});
+
+		var count = 0;
+
+		resultTweets.forEach((tweet, index) => {
+			resultStr += tweet.getHTMLTableRow(index);
+			count += 1;
+		});
+		
+		document.querySelector("span[id='searchCount']").innerHTML = count;
+
 	}
 
 	getResult();
@@ -61,7 +74,8 @@ function addEventHandlerForSearch() {
 		searchStr = e.target.value;
 
 		const logElement = document.getElementById('searchText');
-		logElement.innerHTML = searchStr;	// yyayyy
+		logElement.innerHTML = searchStr;	// displays the search term as it gets edited
+
 		console.log(e.target.value); // current value
 
 		myListener(e);

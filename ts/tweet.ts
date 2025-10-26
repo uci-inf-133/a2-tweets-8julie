@@ -128,9 +128,7 @@ class Tweet {
         var myStr = `
 
         <tr>
-            <th scope="row">${rowNumber}</th>
-            <th scope="row">${rowNumber}</th>
-            <th scope="row">${this.text}</th>
+            <th scope="row">nya</th>
         </tr>
         
         `;
