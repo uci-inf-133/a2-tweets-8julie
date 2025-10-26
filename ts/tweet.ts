@@ -128,8 +128,8 @@ class Tweet {
 
         <tr>
             <th scope="row">${rowNumber}</th>
-            <th scope="row">${this.activityType}</th>
             <th scope="row">${this.text}</th>
+            <th scope="row">${this.activityType}</th>
         </tr>
         
         `;
