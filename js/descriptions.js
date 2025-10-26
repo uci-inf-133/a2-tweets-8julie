@@ -36,11 +36,18 @@ function parseTweets(runkeeper_tweets) {
 function myListener(event){
 	searchStr = event.target.value;
 
-	writtenOnly.forEach((item, index) => {
-		if (item.text.includes(searchStr)){
-			resultStr += item.getHTMLTableRow(index);
-		}
-	});
+	function getResult(){
+		resultStr = "";
+		writtenOnly.forEach((item, index) => {
+			var writtenText = item.writtenText;
+			if (writtenText.includes(searchStr)){
+				console.log(index);
+				resultStr += item.getHTMLTableRow(index);
+			}
+		});
+	}
+
+	getResult();
 
 	var logTarget = document.querySelector("tbody[id='tweetTable']");
 	logTarget.innerHTML = resultStr;

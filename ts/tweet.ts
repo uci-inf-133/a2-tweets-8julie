@@ -124,12 +124,13 @@ class Tweet {
 
     getHTMLTableRow(rowNumber:number):string {
         //TODO: return a table row which summarizes the tweet with a clickable link to the RunKeeper activity
+
         var myStr = `
 
         <tr>
             <th scope="row">${rowNumber}</th>
+            <th scope="row">${rowNumber}</th>
             <th scope="row">${this.text}</th>
-            <th scope="row">${this.activityType}</th>
         </tr>
         
         `;
