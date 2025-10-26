@@ -70,24 +70,39 @@ class Tweet {
         return isNaN(Number(word));
     }
 
+    getIndex(searchStr:string[]): number{
+
+        var possibilities: number[] = [];
+
+        searchStr.forEach((item) => {
+            if (this.text.indexOf(item) != -1){
+                possibilities.push(this.text.indexOf(item));
+            }
+        });
+
+        function compareIndexes(a:number, b:number) { return a - b;}
+        possibilities.sort(compareIndexes);
+
+        return possibilities[0];
+    }
+
     get activityType():string {
         //TODO: parse the activity type from the text of the tweet
 
         var unknownActivity = "unknown";
 
-        if (this.source != 'completed_event') return unknownActivity;
+        if (this.source != "completed_event") return unknownActivity;
 
-        var iStart = this.words.findIndex(word => word == 'km' || word == 'mi') + 1;
-        var iEnd = this.words.findIndex(word => word == 'with' || word == '-' || word == 'in' || word == '@');
+        var iStart = this.getIndex(["mi", "km"]) + 3;
 
-        if (!isNaN(Number(this.words[iStart])) && 
-        (this.words[iStart+1] == "km" || this.words[iStart+1] == "mi")){
-            iStart += 2;
+        var iEnd = this.getIndex(["with", "-"])
+
+        if (iStart != -1){
+            return this.text.slice(iStart, iEnd);
         }
-
-        var myActivity = this.words.slice(iStart, iEnd).join(" ");
-
-        return myActivity;
+        else{
+            return unknownActivity;
+        }
     }
 
     get distance():number {

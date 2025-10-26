@@ -33,13 +33,13 @@ function parseTweets(runkeeper_tweets) {
 	//TODO: create a new array or 
 	// manipulate tweet_array to create a graph of the number 
 	// of tweets containing each type of activity.
+	tweet_array = tweet_array.filter((tweets) => tweets.source == "completed_event");
 
 	var rows = [];
 	var activityTypes = new Set();
 
 
 	for (let i = 0; i < tweet_array.length; i++){
-
 		var currentType = tweet_array[i].activityType;  // you can also use simplifyActivity
 		var currentMeasurement = tweet_array[i].measurement;
 		var currentDistance = tweet_array[i].distance;
