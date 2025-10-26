@@ -3,7 +3,6 @@ class Tweet {
 	time:Date;
     words:Array<string>;
     measurement:string;
-    // activity:string;
 
 	constructor(tweet_text:string, tweet_time:string) {
         this.text = tweet_text;
@@ -19,14 +18,6 @@ class Tweet {
 	//returns either 'live_event', 'achievement', 'completed_event', or 'miscellaneous'
     get source():string {
         //TODO: identify whether the source is a live event, an achievement, a completed event, or miscellaneous.
-
-        // var liveEvent = 'Watch my run right now Live'.toLowerCase().split(" ");
-        // var achievement = 'Achieved a new #FitnessAlerts'.toLowerCase().split(" ");
-        // var completedEvent = 'completed'.toLocaleLowerCase().split(" ");
-
-        // var containsLiveEvent = liveEvent.some(word => this.text.includes(word))
-        // var containsAchievement = achievement.some(word => this.text.includes(word))
-        // var containsCompletedEvent = completedEvent.some(word => this.text.includes(word))
 
         var isLive = this.words.includes("live");
         var isCompleted = this.text.includes("completed a ");
@@ -80,6 +71,8 @@ class Tweet {
     }
 
     get activityType():string {
+        //TODO: parse the activity type from the text of the tweet
+
         var unknownActivity = "unknown";
 
         if (this.source != 'completed_event') return unknownActivity;
@@ -95,20 +88,10 @@ class Tweet {
         var myActivity = this.words.slice(iStart, iEnd).join(" ");
 
         return myActivity;
-
-        return unknownActivity;
-        
-        if (this.source != 'completed_event') {
-            return "unknown";
-        }
-
-        else{
-            return this.words[6];
-        }
-        //TODO: parse the activity type from the text of the tweet
     }
 
     get distance():number {
+        //TODO: prase the distance from the text of the tweet        
 
         var iStart = this.words.findIndex(word => word == 'a') + 1;
         var iEnd = this.words.findIndex(word => word == 'km' || word == 'mi');
@@ -119,8 +102,6 @@ class Tweet {
 
         return Number(this.words.slice(iStart, iEnd).join(""));
 
-
-        //TODO: prase the distance from the text of the tweet
         return 0;
     }
 
@@ -161,10 +142,6 @@ class Tweet {
         else{
             this.measurement = "km";
         }
-
-        // if (this.text.includes("17.28km")){
-        //     console.log("printing: ", this.words);
-        // }
 
         return this.words
     }
