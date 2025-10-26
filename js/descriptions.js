@@ -1,6 +1,12 @@
-var searchStr = "default search string"; 
+var searchStr = "default search term";
 var myEvent = new Event("keyup");
-var resultStr = "default result string";
+var resultStr = `
+    <tr>
+            <th scope="row">None</th>
+            <th scope="row">No Activity</th>
+            <th scope="row">No Tweet</th>
+    </tr>
+`;
 
 function parseTweets(runkeeper_tweets) {
 	//Do not proceed if no tweets loaded
@@ -39,10 +45,6 @@ function addEventHandlerForSearch() {
 		console.log(e.target.value); // current value
 
 		myEvent = e;
-		// write to: <span id="searchText"
-
-		// console.log(this.className); // logs the className of my_element
-		// console.log(e.currentTarget === this); // logs `true`
 	});
 
 }
