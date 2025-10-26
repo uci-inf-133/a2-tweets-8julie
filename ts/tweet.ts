@@ -127,6 +127,7 @@ class Tweet {
         var myStr = `
 
         <tr>
+            <th scope="row">${rowNumber}</th>
             <th scope="row">${this.activityType}</th>
             <th scope="row">${this.text}</th>
         </tr>
