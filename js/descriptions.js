@@ -1,3 +1,7 @@
+var searchStr = "default search string"; 
+var myEvent = new Event("keyup");
+var resultStr = "default result string";
+
 function parseTweets(runkeeper_tweets) {
 	//Do not proceed if no tweets loaded
 	if(runkeeper_tweets === undefined) {
@@ -12,15 +16,22 @@ function parseTweets(runkeeper_tweets) {
 
 
 	//TODO: Filter to just the written tweets
-	var writtenOnly = tweet_array
-	.forEach(tweet => tweet.written == true);
+	var writtenOnly = tweet_array.filter(tweet => tweet.written == true);
+	writtenOnly.forEach((item, index) => {
+		if (item.text.includes(searchStr)){
+			resultStr += item.getHTMLTableRow(index) + "\n";
+		}
+	});
 
-	var tweetHtmls 
+	// console.log("search string: ", searchStr, " input element: ", ${});
 
 	var logTarget = document.querySelector("tbody[id='tweetTable']");
+	
 	// logTarget.innerHTML = 
 
 	function handleEvent(event){
+		searchTerm = event.target.value;
+		
 
 	}
 // forEach(node => node.innerHTML = activityTypes.size);
@@ -34,14 +45,16 @@ function parseTweets(runkeeper_tweets) {
 
 function addEventHandlerForSearch() {
 	//TODO: Search the written tweets as text is entered into the search box, and add them to the table
-
 	const searchArea = document.querySelector("input[id='textFilter']");
 
 	searchArea.addEventListener("keyup", function (e) {
-		document.getElementById('searchText').innerHTML = e.target.value;	// yyayyy
+		searchStr = e.target.value;
+
+		const logElement = document.getElementById('searchText');
+		logElement.innerHTML = searchStr;	// yyayyy
 		console.log(e.target.value); // current value
 
-
+		myEvent = e;
 		// write to: <span id="searchText"
 
 		// console.log(this.className); // logs the className of my_element
