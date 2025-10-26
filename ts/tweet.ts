@@ -48,24 +48,30 @@ class Tweet {
     }
 
     get writtenText():string {
+        //TODO: parse the written text from the tweet
         if(!this.written) {
             return "";
         }
         else{
-            var iStart = this.words.findIndex(value => value == "-") + 1; 
+            var iStart = this.text.indexOf("-") + 1;
+            // words.findIndex(value => value == "-") + 1; 
+
             // it's very important that we only get the FIRST dash
             // because tweets can contain these dashes too
 
-            var iEnd = this.words.findIndex(value => value.includes("http"));
-            var iEndHashTagFirst = this.words.findLastIndex(value => value.includes("#"));
+            var iEnd = this.text.indexOf("http");
+            // words.findIndex(value => value.includes("http"));
+
+            var iEndHashTagFirst = this.text.lastIndexOf("#");
+            // .words.findLastIndex(value => value.includes("#"));
 
             if (iEnd > iEndHashTagFirst){
                 iEnd = iEndHashTagFirst;
             }
 
-            return this.words.slice(iStart, iEnd).join(" ");
+            return this.text.slice(iStart,iEnd);
+            // .words.slice(iStart, iEnd).join(" ");
         }
-        //TODO: parse the written text from the tweet
     }
 
     // my own code
@@ -125,7 +131,7 @@ class Tweet {
         <tr>
             <td scope="row">${rowNumber}</td>
             <td scope="row">${this.activityType}</td>
-            <td scope="row">${this.text}</td>
+            <td scope="row">${this.writtenText}</td>
         </tr>
         `;
 
