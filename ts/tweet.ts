@@ -126,11 +126,11 @@ class Tweet {
         //TODO: return a table row which summarizes the tweet with a clickable link to the RunKeeper activity
 
         var myStr = `
-
-        <tr>
-            <th scope="row">nya</th>
-        </tr>
         
+            <th scope="row">${this.activityType}</th>
+            <th scope="row">${this.text}</th>
+
+            </tr>
         `;
 
         
