@@ -18,8 +18,11 @@ function parseTweets(runkeeper_tweets) {
 	var tweetHtmls 
 
 	var logTarget = document.querySelector("tbody[id='tweetTable']");
-	logTarget.innerHTML = 
+	// logTarget.innerHTML = 
 
+	function handleEvent(event){
+
+	}
 // forEach(node => node.innerHTML = activityTypes.size);
     // const searchInput = document.querySelector("span[id='searchCount']");
 	// searchInput.onsearch = () => {
@@ -32,24 +35,19 @@ function parseTweets(runkeeper_tweets) {
 function addEventHandlerForSearch() {
 	//TODO: Search the written tweets as text is entered into the search box, and add them to the table
 
-	var answers = "";
+	const searchArea = document.querySelector("input[id='textFilter']");
+
+	searchArea.addEventListener("keyup", function (e) {
+		document.getElementById('searchText').innerHTML = e.target.value;	// yyayyy
+		console.log(e.target.value); // current value
 
 
-	const searchArea = document.querySelector("span[id='searchText']");
-	searchArea.addEventListener("search", (event) => {
+		// write to: <span id="searchText"
 
-		oninput = (event) => {
-			event.
-		}  
-		console.log("hello");
-		console.log(`The term searched for was ${searchArea.value}`);
-
-		// writtenOnly
-		// .filter(tweet => tweet.includes(searchInput.value))
-		// .forEach(target => answers += target.getHTMLTableRow);
+		// console.log(this.className); // logs the className of my_element
+		// console.log(e.currentTarget === this); // logs `true`
 	});
 
-	return answers;
 }
 
 //Wait for the DOM to load
