@@ -20,7 +20,8 @@ class Tweet {
         //TODO: identify whether the source is a live event, an achievement, a completed event, or miscellaneous.
 
         var isLive = this.words.includes("live");
-        var isCompleted = this.text.includes("completed a ");
+        var isCompleted = this.text.includes("completed a ")
+        this.text.includes("posted a ");
         var isAchieved = this.words.includes("achieved") || this.words.includes("achievement")
 
         if (isLive) return 'live_event';
@@ -65,6 +66,14 @@ class Tweet {
         }
     }
 
+    get unWrittenText():string{
+        var written = this.writtenText;
+
+        var unwritten = this.text.replace(written, "");
+
+        return unwritten;
+    }
+
     // my own code
     isNumber(word:string): boolean{
         return isNaN(Number(word));
@@ -75,7 +84,7 @@ class Tweet {
         var possibilities: number[] = [];
 
         searchStr.forEach((item) => {
-            if (this.text.indexOf(item) != -1){
+            if (this.unWrittenText.indexOf(item) != -1){
                 possibilities.push(this.text.indexOf(item));
             }
         });
@@ -91,14 +100,22 @@ class Tweet {
 
         var unknownActivity = "unknown";
 
+        var starts = ["mi", "km"]
+        var ends = ["with", "-"];
+
+        var iEnd = this.getIndex(ends);
+
+        // console.log("unwritten: ", this.unWrittenText);
+
         if (this.source != "completed_event") return unknownActivity;
+        if (this.unWrittenText.includes("workout")) return "workout";
+        if (this.unWrittenText.includes("posted a")) starts.push("a");
 
-        var iStart = this.getIndex(["mi", "km"]) + 3;
-
-        var iEnd = this.getIndex(["with", "-"])
+        var iStart = this.getIndex(starts) + 3;
+        var iEnd = this.getIndex(ends);
 
         if (iStart != -1){
-            return this.text.slice(iStart, iEnd);
+            return this.unWrittenText.slice(iStart, iEnd);
         }
         else{
             return unknownActivity;
