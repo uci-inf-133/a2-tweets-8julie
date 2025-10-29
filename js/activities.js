@@ -36,8 +36,10 @@ function parseTweets(runkeeper_tweets) {
 	// tweet_array = tweet_array.filter((tweets) => tweets.source == "completed_event");
 
 	var rows = [];
-	var freq = new Object();
-
+	var freq = new Object(); // Count of each
+	var dist = new Object(); // total distance of each
+	var unique_activities = new Set();
+	var avg_dist_per_activity = {};
 
 	for (let i = 0; i < tweet_array.length; i++){
 		var currentType = tweet_array[i].activityType;  // you can also use simplifyActivity
@@ -54,6 +56,15 @@ function parseTweets(runkeeper_tweets) {
 			freq[currentType] += 1;
 		}
 
+		if (dist[currentType] == undefined){
+			dist[currentType] = currentDistance;
+		}
+		else{
+			dist[currentType] += currentDistance;
+		}
+		
+		unique_activities.add(currentType);
+
 		rows.push({ 
 			"activityType" : currentType,
 			"distance" : currentDistance,
@@ -61,22 +72,22 @@ function parseTweets(runkeeper_tweets) {
 		})
 	}
 
+	unique_activities.forEach((activity) => 
+		avg_dist_per_activity[activity] = parseFloat((dist[activity]/freq[activity]).toFixed(2))
+	);
+
+	var values = Object.values(avg_dist_per_activity).filter((value) => !isNaN(parseFloat(value)) && isFinite(value));
+	var smallest = values.reduce((prev, curr) => prev < curr ? prev : curr);
+	var biggest = values.reduce((prev, curr) => prev > curr ? prev : curr);
+	console.log(smallest, biggest);
+	
 	activity_vis_spec = {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
 		"description": "A scatterplot the day of the week and distance of activity.",
-		// "autosize": {
-		// 	"type": "fit",
-		// 	"contains": "padding"
-		// },
 		"height" : 400,
 		"width" : 500,
-		"data": {
-			"values": rows,
-		},
-		"mark": {
-			"type":"point",
-			"clip":true
-		},
+		"data": { "values": rows },
+		"mark": { "type":"point", "clip":true },
 		"encoding": {
 			"x": {
 				"field": "date",
@@ -84,21 +95,15 @@ function parseTweets(runkeeper_tweets) {
 				"bandPosition": 0,
 				"type": "temporal",
 				"timeUnit": "day",
-				// "scale":{
-				// 	"type":"time"
-				// }
 			},
 			"y": {
 				"field": "distance",
 				"type": "quantitative",
-				"title": "Distance (miles)",
+				// "title": "Distance (miles)",
 				"scale": {
-					// "type": "linear" 
-					// couldn't do the above code because random guy decided to swim for like a thousand miles
-					"domain": [0, 80],
+					"domain": [0, 35],
 					"clamp": true
 				},
-				// "aggregate": "average" /// THIS IS FOR LATER
 			},
 
 		"color": {
@@ -108,7 +113,41 @@ function parseTweets(runkeeper_tweets) {
   }
 };
 
+	activity_vis_mean = {
+		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+		"description": "A scatterplot the day of the week and distance of activity.",
+		"height" : 400,
+		"width" : 500,
+		"data": { "values": rows },
+		"mark": { "type":"point", "clip":true },
+		"encoding": {
+			"x": {
+				"field": "date",
+				"title": "Day of the week",
+				"bandPosition": 0,
+				"type": "temporal",
+				"timeUnit": "day",
+			},
+			"y": {
+				"field": "distance",
+				"type": "quantitative",
+				"scale": {
+					"domain": [0, 35],
+					"clamp": true
+				},
+				"aggregate": "average" /// THIS IS FOR LATER
+			},
+
+		"color": {
+			"field": "activityType", 
+			"type": "nominal"
+		}
+  }
+};
+
+
 	vegaEmbed('#activityVis', activity_vis_spec, {actions:false});
+	vegaEmbed('#distanceVisAggregated', activity_vis_mean, {actions:false});
 
 	//TODO: create the visualizations which group the three most-tweeted activities by the day of the week.
 	//Use those visualizations to answer the questions about which activities tended to be longest and when.
