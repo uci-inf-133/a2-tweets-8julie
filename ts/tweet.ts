@@ -117,9 +117,7 @@ class Tweet {
         if (iStart != -1){
             return this.unWrittenText.slice(iStart, iEnd);
         }
-        else{
-            return unknownActivity;
-        }
+        return unknownActivity;
     }
 
     get distance():number {
@@ -133,8 +131,6 @@ class Tweet {
         }
 
         return Number(this.words.slice(iStart, iEnd).join(""));
-
-        return 0;
     }
 
     getHTMLTableRow(rowNumber:number):string {
