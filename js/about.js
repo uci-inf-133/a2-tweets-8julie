@@ -1,13 +1,50 @@
 function getSourceCount(tweet_array, source_target){
 	const count = tweet_array.reduce(function(counter, currentTweet){
-	if (currentTweet.source == source_target){
-		counter += 1;
-	}
+		if (currentTweet.source == source_target){
+			counter += 1;
+		}
 	return counter;
 }, 0);
 
 	return count;
 }
+
+function getDateFormatted(timeItem){
+	str = "";
+
+	day = ""
+	day_ending = ["st", "nd", "rd", "th"];
+
+	day_num = Number(timeItem.getDate().toString().slice(-1))
+	if (day_num >= 4){
+		day = day_num + day_ending[3]
+	}
+	else{
+		day = day_num + day_ending[day_num - 1]
+	}
+
+	month_str = ['January',
+		"February",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December"
+	]
+	month = month_str[timeItem.getMonth()]
+
+	year = timeItem.getFullYear()
+
+	full_date = day + " " + month + " " + year
+
+	return full_date
+}
+
 
 function getPct(count, total){
 	return (count/total * 100).toFixed(2).toString() + "%";
@@ -29,10 +66,18 @@ function parseTweets(runkeeper_tweets) {
 	//It works correctly, your task is to update the text of the other tags in the HTML file!
 	document.getElementById('numberTweets').innerHTML = tweet_array.length;	
 
-	// my code:
-	// document.addEventListener('DOMContentLoaded', function (event) {
-	// alert("Page loaded!");
-	// });
+	earliest = tweet_array.reduce((prev, curr) => prev.time.getTime() < curr.time.getTime() ? prev : curr).time;
+	latest = tweet_array.reduce((prev, curr) => prev.time.getTime() > curr.time.getTime() ? prev : curr).time;
+
+	getDateFormatted(earliest)
+
+	document.querySelectorAll("span[id='firstDate']").forEach((node) => {
+		node.innerHTML = getDateFormatted(earliest);
+	});
+
+	document.querySelectorAll("span[id='lastDate']").forEach((node) => {
+		node.innerHTML = getDateFormatted(latest);
+	});
 
 	const totalTweets = tweet_array.length;
 
@@ -47,7 +92,6 @@ function parseTweets(runkeeper_tweets) {
 	const achievementsCount = getSourceCount(tweet_array, 'achievement');
 	const completedEventCount = getSourceCount(tweet_array, 'completed_event');
 	const miscellaneousCount = getSourceCount(tweet_array, 'miscellaneous');
-
 
 	var completedEventsElems = document.querySelectorAll("span[class='completedEvents']");
 	completedEventsElems.forEach(node => node.innerHTML = completedEventCount);
