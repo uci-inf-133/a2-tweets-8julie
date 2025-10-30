@@ -7,6 +7,11 @@ function getDayOfWeek(number){
 	return dayNames[number];
 }
 
+function putHTML(html_tag, my_string){
+	var elem = document.querySelectorAll(html_tag);
+	elem.forEach(node => node.innerHTML = my_string);
+}
+
 // function simplifyActivity(activity){
 
 // 	var enduranceSport = ["run", "bike", "walk", "row"]
@@ -39,7 +44,7 @@ function parseTweets(runkeeper_tweets) {
 	var freq = new Object(); // Count of each
 	var dist = new Object(); // total distance of each
 	var unique_activities = new Set();
-	var avg_dist_per_activity = {};
+	var avg_dist_per_activity = [];
 
 	for (let i = 0; i < tweet_array.length; i++){
 		var currentType = tweet_array[i].activityType;  // you can also use simplifyActivity
@@ -72,14 +77,21 @@ function parseTweets(runkeeper_tweets) {
 		})
 	}
 
-	unique_activities.forEach((activity) => 
-		avg_dist_per_activity[activity] = parseFloat((dist[activity]/freq[activity]).toFixed(2))
-	);
+	unique_activities.forEach((activity) => {
+		avg_dist_per_activity.push(activity);
+		avg_dist_per_activity.push(parseFloat((dist[activity]/freq[activity]).toFixed(2)));
+	});
 
-	var values = Object.values(avg_dist_per_activity).filter((value) => !isNaN(parseFloat(value)) && isFinite(value));
-	var smallest = values.reduce((prev, curr) => prev < curr ? prev : curr);
-	var biggest = values.reduce((prev, curr) => prev > curr ? prev : curr);
-	console.log(smallest, biggest);
+	var shortest = avg_dist_per_activity
+	.filter((value) => !isNaN(parseFloat(value)) && isFinite(value))
+	.reduce((prev, curr) => prev < curr ? prev : curr);
+
+	var longest = avg_dist_per_activity
+	.filter((value) => !isNaN(parseFloat(value)) && isFinite(value))
+	.reduce((prev, curr) => prev > curr ? prev : curr);
+
+	putHTML("span[id='longestActivityType']", avg_dist_per_activity[avg_dist_per_activity.indexOf(longest) - 1] + " (" + longest + " mi)");
+	putHTML("span[id='shortestActivityType']", avg_dist_per_activity[avg_dist_per_activity.indexOf(shortest) - 1] + " (" + shortest + " mi)");
 	
 	activity_vis_spec = {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
