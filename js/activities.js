@@ -177,7 +177,7 @@ function parseTweets(runkeeper_tweets) {
 				"type": "quantitative",
 				// "title": "Distance (miles)",
 				"scale": {
-					"domain": [0, 35],
+					"domain": [0, 15],
 					"clamp": true
 				},
 				"aggregate": "average" // don't delete this pls
