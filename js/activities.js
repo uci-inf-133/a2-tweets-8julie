@@ -34,7 +34,6 @@ function parseTweets(runkeeper_tweets) {
 	var unique_activities = new Set();
 	var avg_dist_per_activity = [];
 	var dist_date = new Object();
-	// var dist_per_date = new Distance("date");
 
 	for (let i = 0; i < tweet_array.length; i++){
 		var currentType = tweet_array[i].activityType;  // you can also use simplifyActivity
@@ -61,8 +60,6 @@ function parseTweets(runkeeper_tweets) {
 				dist[currentType] += currentDistance;
 			}
 
-
-
 			if (dist_date[currentDay.getDay()] == undefined){
 				dist_date[currentDay.getDay()] = [currentDistance, 1];
 			}
@@ -77,20 +74,18 @@ function parseTweets(runkeeper_tweets) {
 		rows.push({ 
 			"activityType" : currentType,
 			"distance" : currentDistance,
-			"date" : currentDay.getDate()
+			"date" : getDayOfWeek(currentDay.getDay())
 		})
 	}
+
+	// Get the day with the lengthiest activities on average
 
 	var dist_date_list = [];
 	for (var i = 0; i < 7; i++){
 		dist_date_list.push(getDayOfWeek(i)); // pushes the day of the week itself
 		dist_date_list.push(parseFloat((dist_date[i][0]/dist_date[i][1]).toFixed(2))); // pushes the average 
 	}
-
 	dist_values = dist_date_list.filter((value) => !isNaN(parseFloat(value)) && isFinite(value));
-
-	console.log(dist_date_list);
-
 	var longest_day = 
 	dist_date_list[
 	dist_date_list.indexOf(
@@ -98,21 +93,20 @@ function parseTweets(runkeeper_tweets) {
 	.reduce((prev, curr) => prev > curr ? prev : curr)
 	)  - 1];
 
+	// Get average distance per activity
+
 	unique_activities.forEach((activity) => {
-		avg_dist_per_activity.push(activity);
-		avg_dist_per_activity.push(parseFloat((dist[activity]/freq[activity]).toFixed(2)));
+		avg_dist_per_activity.push([activity, parseFloat((dist[activity]/freq[activity]).toFixed(2))]);
 	});
 
-	var shortest = avg_dist_per_activity
-	.filter((value) => !isNaN(parseFloat(value)) && isFinite(value))
-	.reduce((prev, curr) => prev < curr ? prev : curr);
+	var avg_dist_per_activity_values = avg_dist_per_activity
+	.sort((a, b) => a[1] - b[1]);
 
-	var longest = avg_dist_per_activity
-	.filter((value) => !isNaN(parseFloat(value)) && isFinite(value))
-	.reduce((prev, curr) => prev > curr ? prev : curr);
+	var shortest = avg_dist_per_activity_values[0][0];
+	var longest =  avg_dist_per_activity_values[avg_dist_per_activity.length - 1][0];
 
-	putHTML("span[id='longestActivityType']", avg_dist_per_activity[avg_dist_per_activity.indexOf(longest) - 1] + " (" + longest + " mi)");
-	putHTML("span[id='shortestActivityType']", avg_dist_per_activity[avg_dist_per_activity.indexOf(shortest) - 1] + " (" + shortest + " mi)");
+	putHTML("span[id='longestActivityType']", longest);
+	putHTML("span[id='shortestActivityType']", shortest);
 	putHTML("span[id='weekdayOrWeekendLonger']", longest_day);
 	
 	activity_vis_spec = {
@@ -127,7 +121,7 @@ function parseTweets(runkeeper_tweets) {
 				"field": "date",
 				"title": "Day of the week",
 				// "bandPosition": 0,
-				// "type": "temporal",
+				"type": "nominal",
 				// "timeUnit": "day",
 			},
 			"y": {
