@@ -108,7 +108,21 @@ function parseTweets(runkeeper_tweets) {
 	putHTML("span[id='longestActivityType']", longest);
 	putHTML("span[id='shortestActivityType']", shortest);
 	putHTML("span[id='weekdayOrWeekendLonger']", longest_day);
-	
+
+	// Get 3 highest frequencies
+	var freq_values = [];
+
+	unique_activities.forEach((activity) => {
+		freq_values.push([activity, freq[activity]]);
+	});
+
+	freq_values.sort((a, b) => b[1]- a[1]);
+	console.log(freq_values);
+
+	putHTML("span[id='firstMost']", freq_values[0][0]);
+	putHTML("span[id='secondMost']", freq_values[1][0]);
+	putHTML("span[id='thirdMost']", freq_values[2][0]);
+
 	activity_vis_spec = {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
 		"description": "A scatterplot of the count for the activity depending on the day of the week.",
