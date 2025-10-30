@@ -108,6 +108,7 @@ class Tweet {
         // console.log("unwritten: ", this.unWrittenText);
 
         if (this.source != "completed_event") return unknownActivity;
+        // if (this.unWrittenText.includes("MySports Freestyle")) return unknownActivity;
         if (this.unWrittenText.includes("workout")) return "workout";
         if (this.unWrittenText.includes("posted a")) starts.push("a");
 

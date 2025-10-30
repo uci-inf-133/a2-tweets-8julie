@@ -12,18 +12,6 @@ function putHTML(html_tag, my_string){
 	elem.forEach(node => node.innerHTML = my_string);
 }
 
-// function simplifyActivity(activity){
-
-// 	var enduranceSport = ["run", "bike", "walk", "row"]
-// 	if (enduranceSport.includes(activity)){
-// 		return "enduranceSport";
-// 	} 
-// 	else{
-// 		return "other";
-// 	}
-// }
-
-
 function parseTweets(runkeeper_tweets) {
 	//Do not proceed if no tweets loaded
 	if(runkeeper_tweets === undefined) {
@@ -42,40 +30,60 @@ function parseTweets(runkeeper_tweets) {
 
 	var rows = [];
 	var freq = new Object(); // Count of each
-	var dist = new Object(); // total distance of each
+	var dist = new Object(); // Total distance of each
 	var unique_activities = new Set();
 	var avg_dist_per_activity = [];
+	var dist_date = new Object();
+	// var dist_per_date = new Distance("date");
 
 	for (let i = 0; i < tweet_array.length; i++){
 		var currentType = tweet_array[i].activityType;  // you can also use simplifyActivity
 		var currentMeasurement = tweet_array[i].measurement;
 		var currentDistance = tweet_array[i].distance;
+
 		if (currentMeasurement == "km") currentDistance;
 
 		var currentDay = tweet_array[i].time;
+		// console.log(currentDay.getDay());
 
 		if (freq[currentType] == undefined){
 			freq[currentType] = 1;
 		}
 		else{
-			freq[currentType] += 1;
+			freq[currentType] += 1; // false aggregation
 		}
 
-		if (dist[currentType] == undefined){
-			dist[currentType] = currentDistance;
+		if (!isNaN(currentDistance)){
+			if (dist[currentType] == undefined){
+				dist[currentType] = currentDistance;
+			}
+			else{
+				dist[currentType] += currentDistance;
+			}
+
+
+
+			if (dist_date[currentDay.getDay()] == undefined){
+				dist_date[currentDay.getDay()] = [currentDistance, 1];
+			}
+			else{
+				dist_date[currentDay.getDay()][1] += 1;
+				dist_date[currentDay.getDay()][0] += currentDistance;			
+			}
 		}
-		else{
-			dist[currentType] += currentDistance;
-		}
-		
+
 		unique_activities.add(currentType);
 
 		rows.push({ 
 			"activityType" : currentType,
 			"distance" : currentDistance,
-			"date" : currentDay
+			"date" : currentDay.getDate()
 		})
 	}
+
+	var longest_day;
+
+	console.log(dist_date);
 
 	unique_activities.forEach((activity) => {
 		avg_dist_per_activity.push(activity);
@@ -95,7 +103,7 @@ function parseTweets(runkeeper_tweets) {
 	
 	activity_vis_spec = {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-		"description": "A scatterplot the day of the week and distance of activity.",
+		"description": "A scatterplot of the count for the activity depending on the day of the week.",
 		"height" : 400,
 		"width" : 500,
 		"data": { "values": rows },
@@ -104,9 +112,9 @@ function parseTweets(runkeeper_tweets) {
 			"x": {
 				"field": "date",
 				"title": "Day of the week",
-				"bandPosition": 0,
-				"type": "temporal",
-				"timeUnit": "day",
+				// "bandPosition": 0,
+				// "type": "temporal",
+				// "timeUnit": "day",
 			},
 			"y": {
 				"field": "distance",
@@ -127,7 +135,7 @@ function parseTweets(runkeeper_tweets) {
 
 	activity_vis_mean = {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-		"description": "A scatterplot the day of the week and distance of activity.",
+		"description": "A scatterplot of the average distance depending on the day of the week and the activity.",
 		"height" : 400,
 		"width" : 500,
 		"data": { "values": rows },
