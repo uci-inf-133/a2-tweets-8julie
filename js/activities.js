@@ -81,9 +81,16 @@ function parseTweets(runkeeper_tweets) {
 		})
 	}
 
-	var longest_day;
+	var dist_date_list = [];
+	for (var i = 0; i < 7; i++){
+		dist_date_list.push(dist_date[i]);
+	}
 
-	console.log(dist_date);
+	var longest_day = dist_date_list.reduce((prev, curr) => prev[0] > curr[0] ? prev : curr);
+	var shortest_day = dist_date_list.reduce((prev, curr) => prev[0] < curr[0] ? prev : curr);
+
+	console.log(longest_day, "with ", dist_date);
+	
 
 	unique_activities.forEach((activity) => {
 		avg_dist_per_activity.push(activity);
