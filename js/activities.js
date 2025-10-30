@@ -59,7 +59,7 @@ function parseTweets(runkeeper_tweets) {
 			freq[currentType] = 1;
 		}
 		else{
-			freq[currentType] += 1; // false aggregation
+			freq[currentType] += 1;
 		}
 
 		if (!isNaN(currentDistance)){
@@ -96,7 +96,6 @@ function parseTweets(runkeeper_tweets) {
 	});
 
 	freq_values.sort((a, b) => b[1]- a[1]);
-	// console.log(freq_values);
 
 	putHTML("span[id='firstMost']", freq_values[0][0]);
 	putHTML("span[id='secondMost']", freq_values[1][0]);
@@ -130,17 +129,12 @@ function parseTweets(runkeeper_tweets) {
 	.reduce((prev, curr) => prev > curr ? prev : curr)
 	)  - 1];
 
-	// Get average distance per activity
+	// Get average distance per top 3 activity
+	valid_activities.forEach((activity) => { avg_dist_per_activity.push([activity, parseFloat((dist[activity]/freq[activity]).toFixed(2))]); });
 
-	unique_activities.forEach((activity) => {
-		avg_dist_per_activity.push([activity, parseFloat((dist[activity]/freq[activity]).toFixed(2))]);
-	});
-
-	var avg_dist_per_activity_values = avg_dist_per_activity
-	.sort((a, b) => a[1] - b[1]);
-
-	var shortest = avg_dist_per_activity_values[0][0];
-	var longest =  avg_dist_per_activity_values[avg_dist_per_activity.length - 1][0];
+	var sorted_avg_dist = avg_dist_per_activity.sort((a, b) => a[1] - b[1]);
+	var shortest = sorted_avg_dist[0][0];
+	var longest =  sorted_avg_dist[avg_dist_per_activity.length - 1][0];
 
 	putHTML("span[id='longestActivityType']", longest);
 	putHTML("span[id='shortestActivityType']", shortest);
@@ -197,7 +191,7 @@ function parseTweets(runkeeper_tweets) {
 				"field": "distance",
 				"type": "quantitative",
 				"scale": {
-					"domain": [0, 35],
+					"domain": [0, 15],
 					"clamp": true
 				},
 				"aggregate": "average" /// THIS IS FOR LATER
