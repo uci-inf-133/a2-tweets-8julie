@@ -83,14 +83,20 @@ function parseTweets(runkeeper_tweets) {
 
 	var dist_date_list = [];
 	for (var i = 0; i < 7; i++){
-		dist_date_list.push(dist_date[i]);
+		dist_date_list.push(getDayOfWeek(i)); // pushes the day of the week itself
+		dist_date_list.push(parseFloat((dist_date[i][0]/dist_date[i][1]).toFixed(2))); // pushes the average 
 	}
 
-	var longest_day = dist_date_list.reduce((prev, curr) => prev[0] > curr[0] ? prev : curr);
-	var shortest_day = dist_date_list.reduce((prev, curr) => prev[0] < curr[0] ? prev : curr);
+	dist_values = dist_date_list.filter((value) => !isNaN(parseFloat(value)) && isFinite(value));
 
-	console.log(longest_day, "with ", dist_date);
-	
+	console.log(dist_date_list);
+
+	var longest_day = 
+	dist_date_list[
+	dist_date_list.indexOf(
+	dist_values
+	.reduce((prev, curr) => prev > curr ? prev : curr)
+	)  - 1];
 
 	unique_activities.forEach((activity) => {
 		avg_dist_per_activity.push(activity);
@@ -107,6 +113,7 @@ function parseTweets(runkeeper_tweets) {
 
 	putHTML("span[id='longestActivityType']", avg_dist_per_activity[avg_dist_per_activity.indexOf(longest) - 1] + " (" + longest + " mi)");
 	putHTML("span[id='shortestActivityType']", avg_dist_per_activity[avg_dist_per_activity.indexOf(shortest) - 1] + " (" + shortest + " mi)");
+	putHTML("span[id='weekdayOrWeekendLonger']", longest_day);
 	
 	activity_vis_spec = {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
