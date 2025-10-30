@@ -140,14 +140,7 @@ function parseTweets(runkeeper_tweets) {
 	putHTML("span[id='shortestActivityType']", shortest);
 	putHTML("span[id='weekdayOrWeekendLonger']", longest_day);
 
-	activity_vis_spec = {
-		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-		"description": "A scatterplot of the count for the activity depending on the day of the week.",
-		"height" : 400,
-		"width" : 500,
-		"data": { "values": rows },
-		"mark": { "type":"point", "clip":true },
-		"encoding": {
+	var default_encoding = {
 			"x": {
 				"field": "date",
 				"title": "Day of the week",
@@ -168,18 +161,10 @@ function parseTweets(runkeeper_tweets) {
 		"color": {
 			"field": "activityType", 
 			"type": "nominal"
-		}
-  }
-};
+			}
+		};
 
-	activity_vis_mean = {
-		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-		"description": "A scatterplot of the average distance depending on the day of the week and the activity.",
-		"height" : 400,
-		"width" : 500,
-		"data": { "values": rows },
-		"mark": { "type":"point", "clip":true },
-		"encoding": {
+	var aggregate_encoding = {
 			"x": {
 				"field": "date",
 				"title": "Day of the week",
@@ -190,23 +175,62 @@ function parseTweets(runkeeper_tweets) {
 			"y": {
 				"field": "distance",
 				"type": "quantitative",
+				// "title": "Distance (miles)",
 				"scale": {
-					"domain": [0, 15],
+					"domain": [0, 35],
 					"clamp": true
 				},
-				"aggregate": "average" /// THIS IS FOR LATER
+				"aggregate": "average" // don't delete this pls
 			},
 
 		"color": {
 			"field": "activityType", 
 			"type": "nominal"
+			}
+		};
+
+
+	distance_graph = {
+		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+		"description": "A scatterplot of the count for the activity depending on the day of the week.",
+		"height" : 400,
+		"width" : 500,
+		"data": { "values": rows },
+		"mark": { "type":"point", "clip":true },
+		"encoding": default_encoding  
+	};
+
+	distance_graph_aggregate = {
+		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+		"description": "A scatterplot of the average distance depending on the day of the week and the activity.",
+		"height" : 400,
+		"width" : 500,
+		"data": { "values": rows },
+		"mark": { "type":"point", "clip":true },
+		"encoding":  aggregate_encoding ,
+		"color": {
+			"field": "activityType", 
+			"type": "nominal"
 		}
-  }
-};
+	};
+
+	// <button id="aggregate" class="btn btn-primary">Show means</button>
+
+	var count = 0;
+
+	var dv_elem = document.getElementById("distanceVis");
+	var av_elem = document.getElementById("distanceVisAggregated");
+	var myEmbed = vegaEmbed('#distanceVis', distance_graph_aggregate, {actions:false})
+
+	vegaEmbed('#distanceVis', distance_graph).view()
 
 
-	vegaEmbed('#activityVis', activity_vis_spec, {actions:false});
-	vegaEmbed('#distanceVisAggregated', activity_vis_mean, {actions:false});
+	var default_view = res.view;
+	default_view.run(default_encoding);
+
+	// vegaEmbed('#distanceVisAggregated', distance_graph_aggregate, {actions:false});
+	// vegaEmbed('#distanceVis', activity_vis_spec, {actions:false});
+	// vegaEmbed('#distanceVisAggregated', activity_vis_mean, {actions:false});
 
 	//TODO: create the visualizations which group the three most-tweeted activities by the day of the week.
 	//Use those visualizations to answer the questions about which activities tended to be longest and when.
@@ -214,7 +238,26 @@ function parseTweets(runkeeper_tweets) {
 	numberActivities.forEach(node => node.innerHTML = Object.keys(freq).length);
 }
 
+function button_click_handler(event){
+	vegaEmbed('#distanceVisAggregated', distance_graph_aggregate)
+	.then((res) =>	{
+		view = res.view;
+		view.insert('myData', rows);
+		console.log(view.getState());
+		view.run();
+	});
+}
+
+function addEventHandlerForButton(){
+	const my_button = document.getElementById("aggregate");
+
+	my_button.addEventListener("click", function(e){
+		button_click_handler(e);
+	});
+}
+
 //Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', function (event) {
+	addEventHandlerForButton();
 	loadSavedRunkeeperTweets().then(parseTweets);
 });

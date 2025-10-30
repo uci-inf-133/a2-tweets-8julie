@@ -17,3 +17,18 @@ a:active {
 	color: #B32B00;
 	text-decoration: underline;
 }
+
+.expand:before {
+  content: '+';
+  color: green;
+}
+.expand:after {
+  content: 'expand';
+}
+.close:before {
+  color: red;
+  content: '-';
+}
+.close:after {
+  content: 'close';
+}
