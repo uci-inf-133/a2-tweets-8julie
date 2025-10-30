@@ -7,6 +7,16 @@ function getDayOfWeek(number){
 	return dayNames[number];
 }
 
+function isValidActivity(activity, validActivities){
+	for (var valid in validActivities){
+		if (valid.includes(activity)){
+			return true;
+		}
+	}
+
+	return false;
+}
+
 function putHTML(html_tag, my_string){
 	var elem = document.querySelectorAll(html_tag);
 	elem.forEach(node => node.innerHTML = my_string);
@@ -78,7 +88,34 @@ function parseTweets(runkeeper_tweets) {
 		})
 	}
 
-	// Get the day with the lengthiest activities on average
+	// Get 3 highest frequencies
+	var freq_values = [];
+
+	unique_activities.forEach((activity) => {
+		freq_values.push([activity, freq[activity]]);
+	});
+
+	freq_values.sort((a, b) => b[1]- a[1]);
+	// console.log(freq_values);
+
+	putHTML("span[id='firstMost']", freq_values[0][0]);
+	putHTML("span[id='secondMost']", freq_values[1][0]);
+	putHTML("span[id='thirdMost']", freq_values[2][0]);
+
+	var valid_activities = [freq_values[0][0],  freq_values[1][0],  freq_values[2][0]];
+
+	function checkValid(activity){
+		for (var i = 0; i < valid_activities.length; i++){
+			var valid = valid_activities[i];
+			if (activity == valid){
+				// console.log(tweet);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	rows = rows.filter((tweet) => checkValid(tweet.activityType));
 
 	var dist_date_list = [];
 	for (var i = 0; i < 7; i++){
@@ -108,20 +145,6 @@ function parseTweets(runkeeper_tweets) {
 	putHTML("span[id='longestActivityType']", longest);
 	putHTML("span[id='shortestActivityType']", shortest);
 	putHTML("span[id='weekdayOrWeekendLonger']", longest_day);
-
-	// Get 3 highest frequencies
-	var freq_values = [];
-
-	unique_activities.forEach((activity) => {
-		freq_values.push([activity, freq[activity]]);
-	});
-
-	freq_values.sort((a, b) => b[1]- a[1]);
-	console.log(freq_values);
-
-	putHTML("span[id='firstMost']", freq_values[0][0]);
-	putHTML("span[id='secondMost']", freq_values[1][0]);
-	putHTML("span[id='thirdMost']", freq_values[2][0]);
 
 	activity_vis_spec = {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
@@ -166,9 +189,9 @@ function parseTweets(runkeeper_tweets) {
 			"x": {
 				"field": "date",
 				"title": "Day of the week",
-				"bandPosition": 0,
-				"type": "temporal",
-				"timeUnit": "day",
+				// "bandPosition": 0,
+				"type": "nominal",
+				// "timeUnit": "day",
 			},
 			"y": {
 				"field": "distance",
@@ -193,7 +216,6 @@ function parseTweets(runkeeper_tweets) {
 
 	//TODO: create the visualizations which group the three most-tweeted activities by the day of the week.
 	//Use those visualizations to answer the questions about which activities tended to be longest and when.
-
 	var numberActivities = 	document.querySelectorAll("span[id='numberActivities']");
 	numberActivities.forEach(node => node.innerHTML = Object.keys(freq).length);
 }
